@@ -127,19 +127,16 @@ def main_page(user_email, user_id, token):
             st.session_state['messages'] = []
             st.session_state['messages'].append({"role": "user", "content": 'Act like a fitness guru named ChadAI'})
 
-        # update the interface with the previous messages
         for message in st.session_state['messages']:
             if message['content'] != 'Act like a fitness guru named ChadAI':
                 with st.chat_message(message['role']):
                     st.markdown(message['content'])
 
-        # create the chat interface
         if prompt := st.chat_input("Ask a question about fitness.."):
             st.session_state['messages'].append({"role": "user", "content": prompt})
             with st.chat_message('user'):
                 st.markdown(prompt)
 
-            # get response from the model
             with st.chat_message('assistant'):
                 client = st.session_state['model']
                 stream = client.chat.completions.create(
@@ -154,9 +151,6 @@ def main_page(user_email, user_id, token):
 
                 response = st.write_stream(stream)
             st.session_state['messages'].append({"role": "assistant", "content": response})
-
-            # handle message overflow based on the model size
-            
     
     elif page == "📙Workout Entries":
         st.title("🏋Workout Entries")
