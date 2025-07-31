@@ -35,10 +35,10 @@ def main_app(user_email, user_id, token):
         sign_out()
 
 def auth_screen():
-    st.set_page_config(page_title="RepRange", page_icon="images\RepRange-logo.png")
+    st.set_page_config(page_title="RepRange", page_icon="RepRange-logo.png")
     logo, title = st.columns([1,5])
     with logo:
-        st.image("images\RepRange-logo.png", width=100)
+        st.image("RepRange-logo.png", width=100)
     with title:
         st.title("RepRange")
     
