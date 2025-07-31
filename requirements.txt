@@ -2,3 +2,4 @@ streamlit
 streamlit_calendar
 supabase
 pandas
+openai

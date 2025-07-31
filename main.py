@@ -2,22 +2,28 @@ import streamlit as st
 from streamlit_calendar import calendar
 from supabase import create_client, Client
 import pandas as pd
+from openai import OpenAI
 import exercises
 
 supabase_url = st.secrets["SUPABASE_URL"]
 supabase_key = st.secrets["SUPABASE_KEY"]
+openai_key = st.secrets["OPENAI_KEY"]
 supabase = Client = create_client(supabase_url, supabase_key)
 
 def main_page(user_email, user_id, token):
     st.set_page_config(page_icon="RepRange-logo.png", page_title="RepRange", initial_sidebar_state='expanded')
     
-    supabase.postgrest.auth(token)
+    try:
+        supabase.postgrest.auth(token)
+    except Exception as e:
+        supabase.auth.sign_out()
+        st.rerun()
 
     # Sidebar navigation for authenticated users
     st.sidebar.image("default-user.png", width=75)
     st.sidebar.write(f"Welcome, {user_email}!")
     st.sidebar.title("Menu")
-    page = st.sidebar.selectbox("Select a page", ["Log Workout", "Workout Entries", "Progress", "About"])
+    page = st.sidebar.selectbox("Select a page", ["📝Log Workout", "🦾ChadAI", "📙Workout Entries", "📈Progress", "🔗About"])
     
     all_workouts = exercises.exerciseTypes
     all_workouts.sort()
@@ -50,7 +56,7 @@ def main_page(user_email, user_id, token):
             except Exception as e:
                 st.error(f"Error logging workout: {e}")
     
-    if page == "Log Workout":
+    if page == "📝Log Workout":
         homeLogo, homeTitle = st.columns([1,5])
         with homeLogo:
             st.image("RepRange-logo.png", width=100)
@@ -104,8 +110,55 @@ def main_page(user_email, user_id, token):
             log_workout(dateClicked["date"])
         except Exception as e:
             pass
+    
+    elif page == "🦾ChadAI":
+        logo, title = st.columns([1,5])
 
-    elif page == "Workout Entries":
+        with logo:
+            st.image("chadAI.png", width=100)
+        with title:
+            st.title("ChadAI")
+            github, linkedin, streamlit, space = st.columns([1,1,1,1.5])
+
+        if 'model' not in st.session_state:
+            st.session_state['model'] = OpenAI(api_key=openai_key)
+
+        if 'messages' not in st.session_state:
+            st.session_state['messages'] = []
+            st.session_state['messages'].append({"role": "user", "content": 'Act like a fitness guru named ChadAI'})
+
+        # update the interface with the previous messages
+        for message in st.session_state['messages']:
+            if message['content'] != 'Act like a fitness guru named ChadAI':
+                with st.chat_message(message['role']):
+                    st.markdown(message['content'])
+
+        # create the chat interface
+        if prompt := st.chat_input("Ask a question about fitness.."):
+            st.session_state['messages'].append({"role": "user", "content": prompt})
+            with st.chat_message('user'):
+                st.markdown(prompt)
+
+            # get response from the model
+            with st.chat_message('assistant'):
+                client = st.session_state['model']
+                stream = client.chat.completions.create(
+                    model='gpt-4o-mini',
+                    messages=[
+                        {"role": message["role"], "content": message["content"]} for message in st.session_state['messages']
+                    ],
+                    temperature=0.7,
+                    max_tokens=256,
+                    stream=True
+                )
+
+                response = st.write_stream(stream)
+            st.session_state['messages'].append({"role": "assistant", "content": response})
+
+            # handle message overflow based on the model size
+            
+    
+    elif page == "📙Workout Entries":
         st.title("🏋Workout Entries")
         workoutfilter = st.selectbox("Filter by Exercise Type", all_workouts, placeholder="All", index=None)
         if workoutfilter == None:
@@ -173,7 +226,7 @@ def main_page(user_email, user_id, token):
         else:
             st.write("No workouts logged yet.")
 
-    elif page == "Progress":
+    elif page == "📈Progress":
         st.title("💪Workout Progress")
         exerciseType = st.selectbox(label="Exercise Type", options=all_workouts, index=0)
         response = supabase.table("workouts").select("*").eq("user_id", user_id).eq("exercise_type", exerciseType).execute()
@@ -228,7 +281,7 @@ def main_page(user_email, user_id, token):
                     st.write(f"{round(repsMax)}")
         else:
             st.write("No data available for analytics.")
-    elif page == "About":
+    elif page == "🔗About":
         logo, title = st.columns([1,5])
 
         with logo:
