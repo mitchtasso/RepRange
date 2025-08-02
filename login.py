@@ -1,6 +1,6 @@
 import streamlit as st
 from supabase import create_client, Client
-import main
+import scripts.main as main
 
 supabase_url = st.secrets["SUPABASE_URL"]
 supabase_key = st.secrets["SUPABASE_KEY"]
