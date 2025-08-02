@@ -11,16 +11,12 @@ openai_key = st.secrets["OPENAI_KEY"]
 supabase = Client = create_client(supabase_url, supabase_key)
 
 def main_page(user_email, user_id, token):
-    st.set_page_config(page_icon="RepRange-logo.png", page_title="RepRange", initial_sidebar_state='expanded')
+    st.set_page_config(page_icon="images/RepRange-logo.png", page_title="RepRange", initial_sidebar_state='expanded')
     
-    try:
-        supabase.postgrest.auth(token)
-    except Exception as e:
-        supabase.auth.sign_out()
-        st.rerun()
+    supabase.postgrest.auth(token)
 
     # Sidebar navigation for authenticated users
-    st.sidebar.image("default-user.png", width=75)
+    st.sidebar.image("images/default-user.png", width=75)
     st.sidebar.write(f"Welcome, {user_email}!")
     st.sidebar.title("Menu")
     page = st.sidebar.selectbox("Select a page", ["📝Log Workout", "🦾ChadAI", "📙Workout Entries", "📈Progress", "🔗About"])
@@ -59,7 +55,7 @@ def main_page(user_email, user_id, token):
     if page == "📝Log Workout":
         homeLogo, homeTitle = st.columns([1,5])
         with homeLogo:
-            st.image("RepRange-logo.png", width=100)
+            st.image("images/RepRange-logo.png", width=100)
         with homeTitle:
             st.title(f" Welcome to RepRange!")
         st.write("Please select a date and log your workout for the day or for any days you missed. No slacking!")
@@ -120,7 +116,7 @@ def main_page(user_email, user_id, token):
             st.session_state['messages'].append({"role": "user", "content": f'Act like a fitness guru named ChadAI and use these workout records for reference: {str(response.data)}'})
 
         with logo:
-            st.image("chadAI.png", width=100)
+            st.image("images/chadAI.png", width=100)
         with title:
             st.title("ChadAI")
             clear = st.button("Clear")
@@ -285,7 +281,7 @@ def main_page(user_email, user_id, token):
         logo, title = st.columns([1,5])
 
         with logo:
-            st.image("logo.png", width=100)
+            st.image("images/logo.png", width=100)
         with title:
             st.title("About")
             github, linkedin, streamlit, space = st.columns([1,1,1,1.5])
