@@ -1,10 +1,12 @@
 import streamlit as st
 from supabase import create_client, Client
 
-import scripts.logworkout as logworkout
+import scripts.dashboard as dashboard
+import scripts.log as log
 import scripts.chadai as chadai
-import scripts.workouts_record as workouts_record
+import scripts.records as records
 import scripts.progress as progress
+import scripts.profile as profile
 import scripts.about as about
 
 supabase_url = st.secrets["SUPABASE_URL"]
@@ -21,15 +23,19 @@ def main_page(user_email, user_id, token):
     st.sidebar.image("images/default-user.png", width=75)
     st.sidebar.write(f"Welcome, {user_email}!")
     st.sidebar.title("Menu")
-    page = st.sidebar.selectbox("Select a page", ["📝Log Workout", "🦾ChadAI", "📙Workout Entries", "📈Progress", "🔗About"])
+    page = st.sidebar.selectbox("Select a page", ["📊Dashboard","📝Log", "🦾ChadAI", "📙Records", "📈Progress", "👤Profile", "🔗About"])
     
-    if page == "📝Log Workout":
-        logworkout.page(supabase, user_id)
+    if page == "📊Dashboard":
+        dashboard.page(supabase, user_id)
+    elif page == "📝Log":
+        log.page(supabase, user_id)
     elif page == "🦾ChadAI":
         chadai.page(supabase, user_id, openai_key)
-    elif page == "📙Workout Entries":
-        workouts_record.page(supabase, user_id)
+    elif page == "📙Records":
+        records.page(supabase, user_id)
     elif page == "📈Progress":
         progress.page(supabase, user_id)
+    elif page == "👤Profile":
+        profile.page(supabase, user_id, user_email)
     elif page == "🔗About":
         about.page()

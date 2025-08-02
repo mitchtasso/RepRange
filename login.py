@@ -74,6 +74,9 @@ if "user_email" not in st.session_state:
     st.session_state['authenticated'] = False
 
 if st.session_state.user_email:
-    main_app(st.session_state.user_email, st.session_state.user_id, st.session_state.token)
+    try:
+        main_app(st.session_state.user_email, st.session_state.user_id, st.session_state.token)
+    except Exception as e:
+        st.error(f"Session stale. Please refresh the page.")
 else:
     auth_screen()
