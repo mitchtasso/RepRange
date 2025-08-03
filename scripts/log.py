@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_calendar import calendar
 import scripts.exercises as exercises
+import streamlit.components.v1 as components
 
 all_workouts = exercises.exerciseTypes
 all_workouts.sort()
@@ -61,6 +62,7 @@ def log_meal(date, supabase, user_id):
             st.error(f"Error logging workout: {e}")
 
 def page(supabase, user_id):
+    st.session_state.logform = None
     homeTitle, logType, space = st.columns([1.25,1,3], vertical_alignment='bottom')
     with homeTitle:
         st.title(f"📝Log")
@@ -120,11 +122,23 @@ def page(supabase, user_id):
         key='calendar',
         callbacks=['dateClick', 'eventChange', 'eventsSet', 'select']
         )
+    
+    def scroll_to(element_id):
+        components.html(f'''
+        <script>
+            var element = window.parent.document.getElementById("{element_id}");
+            element.scrollIntoView({{behavior: 'smooth'}});
+        </script>
+    '''.encode())
+    
     try:
-        dateClicked = cal["dateClick"]
-        if log_type == "Workout":
-            log_workout(dateClicked["date"], supabase, user_id)
-        elif log_type == "Meal":
-            log_meal(dateClicked["date"], supabase, user_id)
+        if cal["dateClick"]:
+            dateClicked = cal["dateClick"]
+            if log_type == "Workout":
+                log_workout(dateClicked["date"], supabase, user_id)
+                scroll_to("log-a-new-workout")
+            elif log_type == "Meal":
+                log_meal(dateClicked["date"], supabase, user_id)
+                scroll_to("log-a-new-meal")
     except Exception as e:
         pass
