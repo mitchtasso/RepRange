@@ -36,6 +36,6 @@ def main_page(user_email, user_id, token):
     elif page == "📈Progress":
         progress.page(supabase, user_id)
     elif page == "👤Profile":
-        profile.page(supabase, user_id, user_email)
+        profile.page(user_id, user_email)
     elif page == "🔗About":
         about.page()
