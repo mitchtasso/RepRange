@@ -7,7 +7,7 @@ all_workouts.sort()
 
 def page(supabase, user_id):
     st.title("📈Progress")
-    progressType = st.selectbox('Tool', options=['Strength Tracker', 'Calorie Tracker'])
+    progressType = st.selectbox('Tool', options=['Strength Tracker', 'Macro Tracker'])
     if progressType == 'Strength Tracker':
         exerciseType = st.selectbox(label="Exercise Type", options=all_workouts, index=0)
         response = supabase.table("workouts").select("*").eq("user_id", user_id).eq("exercise_type", exerciseType).execute()
@@ -62,12 +62,19 @@ def page(supabase, user_id):
                     st.write(f"{round(repsMax)}")
         else:
             st.write("No data available for analytics.")
-    elif progressType == 'Calorie Tracker':
+    elif progressType == 'Macro Tracker':
         response = supabase.table("meals").select("*").eq("user_id", user_id).execute()
         meals = response.data
         if meals:
-            st.subheader("Progress by Volume")
+            st.subheader("Progress by Calories")
             df = pd.DataFrame(meals)
             df['date'] = pd.to_datetime(df['date'])
             weekly_duration = df.groupby('date')['calories'].sum()
             st.line_chart(weekly_duration, x_label='Date', y_label='Calories')
+
+            st.subheader("Progress by Protein")
+            df = pd.DataFrame(meals)
+            df['date'] = pd.to_datetime(df['date'])
+            weekly_duration = df.groupby('date')['protein'].sum()
+            st.line_chart(weekly_duration, x_label='Date', y_label='Protein')
+
