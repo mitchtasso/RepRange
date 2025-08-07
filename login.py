@@ -30,7 +30,10 @@ def sign_out():
         st.error(f"Logout failed: {e}")
 
 def main_app(user_email, user_id, token):
-    main.main_page(user_email, user_id, token)
+    try:
+        main.main_page(user_email, user_id, token)
+    except Exception as e:
+        st.error(f"Session failed, please refresh the page: {e}")
     if st.sidebar.button("Logout"):
         sign_out()
 
@@ -74,9 +77,6 @@ if "user_email" not in st.session_state:
     st.session_state['authenticated'] = False
 
 if st.session_state.user_email:
-    try:
-        main_app(st.session_state.user_email, st.session_state.user_id, st.session_state.token)
-    except Exception as e:
-        st.error(f"Session stale. Please refresh the page.")
+    main_app(st.session_state.user_email, st.session_state.user_id, st.session_state.token)
 else:
     auth_screen()
