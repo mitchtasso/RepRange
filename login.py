@@ -60,9 +60,9 @@ def auth_screen():
                 st.rerun()
     
     with signup:
-        email_signup = st.text_input("Email")
-        password_signup = st.text_input("Password", type='password')
-        confirm_password = st.text_input("Confirm Password", type='password')
+        email_signup = st.text_input("Email", key='email_signup')
+        password_signup = st.text_input("Password", type='password', key='signup_pass')
+        confirm_password = st.text_input("Confirm Password", type='password', key='confirm_pass')
         if st.button("Register"):
             if confirm_password == password_signup:
                 user = sign_up(email_signup, password_signup)
