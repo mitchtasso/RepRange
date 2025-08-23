@@ -5,11 +5,7 @@ now_utc = datetime.now(timezone.utc)
 seven_days_ago_utc = now_utc - timedelta(days=7)
 
 def page(supabase, user_id):
-    homeLogo, homeTitle = st.columns([1,5])
-    with homeLogo:
-        st.image("images/RepRange-logo.png", width=100)
-    with homeTitle:
-        st.title(f" Welcome to RepRange!")
+    st.title(f" Welcome to RepRange!")
     
     st.write("A platform for logging workouts, meals, and tracking your progress along the way")
     

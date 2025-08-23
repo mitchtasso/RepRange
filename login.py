@@ -36,16 +36,20 @@ def main_app(user_email, user_id, token):
         st.error(f"Session failed, please refresh the page: {e}")
     if st.sidebar.button("Logout"):
         sign_out()
+    st.sidebar.divider()
+    st.sidebar.image("images/RepRange-logo.png", width=250)
+    st.sidebar.write("Powered by OpenAI's GPT-4")
+    
 
 def auth_screen():
-    st.set_page_config(page_title="RepRange", page_icon="images/RepRange-logo.png")
-    logo, title = st.columns([1,5])
-    with logo:
-        st.image("images/RepRange-logo.png", width=100)
-    with title:
-        st.title("RepRange")
+    st.set_page_config(page_title="RepRange", page_icon="images/RepRange-icon.png")
+    space, mid, space2 = st.columns(3)
+    with mid:
+        st.image("images/RepRange-logo.png", width=200)
     
-    login, signup = st.tabs(["Login", "Sign Up"])
+    form = st.container(border=True)
+    
+    login, signup = form.tabs([r"$\textsf{\large Login}$", r"$\textsf{\large Sign Up}$"])
     
     with login:
         email = st.text_input("Email", key='login_user')

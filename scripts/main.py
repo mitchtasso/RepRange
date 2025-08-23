@@ -15,7 +15,7 @@ openai_key = st.secrets["OPENAI_KEY"]
 supabase = Client = create_client(supabase_url, supabase_key)
 
 def main_page(user_email, user_id, token):
-    st.set_page_config(page_icon="images/RepRange-logo.png", page_title="RepRange", initial_sidebar_state='expanded')
+    st.set_page_config(page_icon="images/RepRange-icon.png", page_title="RepRange", initial_sidebar_state='expanded')
     
     supabase.postgrest.auth(token)
 
