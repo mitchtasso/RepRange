@@ -48,7 +48,7 @@ def auth_screen():
     login, signup = st.tabs(["Login", "Sign Up"])
     
     with login:
-        email = st.text_input("Email", key='login_user')
+        email = st.text_input("Email", key='login-user')
         password = st.text_input("Password", type='password', key='login_pass')
         if st.button("Login", key='login'):
             user = sign_in(email, password)
