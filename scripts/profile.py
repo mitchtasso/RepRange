@@ -16,14 +16,20 @@ def page(user_id, user_email):
     profile = st.container(border=True)
     profile.write(f"Email: {user_email}")
     
-    profile.error("Selecting this option immediately deletes your account and all records. Proceed with caution.")
-    if profile.button("Delete Account"):
-        try:
-            supabase.table("workouts").delete().eq("user_id", user_id).execute()
-            supabase.table("meals").delete().eq("user_id", user_id).execute()
-            supabase.auth.admin.delete_user(user_id)
-            profile.success("Account deleted successfully")
-            login.sign_out()
-        except Exception as e:
-            profile.error(f"Error deleting all records: {e}")
+    if profile.button(":red[Delete Account]"):
+        profile.error("Selecting this option immediately deletes your account and all records. Proceed with caution.")
+        deleteCol, cancelCol, blank = profile.columns([1,1,5])
+        with deleteCol:
+            if st.button(':red[Delete]', key='delete_profile', use_container_width=True):
+                try:
+                    supabase.table("workouts").delete().eq("user_id", user_id).execute()
+                    supabase.table("meals").delete().eq("user_id", user_id).execute()
+                    supabase.auth.admin.delete_user(user_id)
+                    profile.success("Account deleted successfully")
+                    login.sign_out()
+                except Exception as e:
+                    profile.error(f"Error deleting all records: {e}")
+        with cancelCol:
+            if st.button('Cancel', key='cancel_delete', use_container_width=True):
+                st.rerun()
     
