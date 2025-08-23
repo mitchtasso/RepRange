@@ -37,7 +37,14 @@ def main_app(user_email, user_id, token):
     if st.sidebar.button("Logout"):
         sign_out()
 
-def auth_screen():
+if "user_email" not in st.session_state:
+    st.session_state.user_email = None
+    st.session_state.user_id = None
+    st.session_state['authenticated'] = False
+
+if st.session_state.user_email:
+    main_app(st.session_state.user_email, st.session_state.user_id, st.session_state.token)
+else:
     st.set_page_config(page_title="RepRange", page_icon="images/RepRange-logo.png")
     logo, title = st.columns([1,5])
     with logo:
@@ -58,7 +65,6 @@ def auth_screen():
                 st.session_state['authenticated'] = True
                 st.success(f"Welcome back, {email}!")
                 st.rerun()
-    
     with signup:
         email_signup = st.text_input("Email", key='email_signup')
         password_signup = st.text_input("Password", type='password', key='signup_pass')
@@ -70,13 +76,3 @@ def auth_screen():
                     st.success("Registration successful. Please accept the confirmation email then login.")
             else:
                 st.error("Password do not match")
-
-if "user_email" not in st.session_state:
-    st.session_state.user_email = None
-    st.session_state.user_id = None
-    st.session_state['authenticated'] = False
-
-if st.session_state.user_email:
-    main_app(st.session_state.user_email, st.session_state.user_id, st.session_state.token)
-else:
-    auth_screen()
