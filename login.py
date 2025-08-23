@@ -50,7 +50,7 @@ def auth_screen():
     with login:
         email = st.text_input("Email", key='login_user')
         password = st.text_input("Password", type='password', key='login_pass')
-        if st.button("Login"):
+        if st.button("Login", key='login'):
             user = sign_in(email, password)
             if user and user.user:
                 st.session_state.user_email = user.user.email
@@ -63,7 +63,7 @@ def auth_screen():
         email_signup = st.text_input("Email", key='email_signup')
         password_signup = st.text_input("Password", type='password', key='signup_pass')
         confirm_password = st.text_input("Confirm Password", type='password', key='confirm_pass')
-        if st.button("Register"):
+        if st.button("Register", key='register'):
             if confirm_password == password_signup:
                 user = sign_up(email_signup, password_signup)
                 if user and user.user:
