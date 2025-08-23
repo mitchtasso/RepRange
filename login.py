@@ -55,7 +55,7 @@ else:
     login, signup = st.tabs(["Login", "Sign Up"])
     
     with login:
-        email = st.text_input("Email")
+        email = st.text_input("Email", key='login_user')
         password = st.text_input("Password", type='password', key='login_pass')
         if st.button("Login", key='login'):
             user = sign_in(email, password)
