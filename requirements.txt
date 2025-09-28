@@ -3,3 +3,4 @@ streamlit_calendar
 supabase
 pandas
 openai
+streamlit-cookies-controller

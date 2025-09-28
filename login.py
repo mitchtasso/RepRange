@@ -1,10 +1,13 @@
 import streamlit as st
 from supabase import create_client, Client
 import scripts.main as main
+from streamlit_cookies_controller import CookieController
 
 supabase_url = st.secrets["SUPABASE_URL"]
 supabase_key = st.secrets["SUPABASE_KEY"]
 supabase = Client = create_client(supabase_url, supabase_key)
+
+controller = CookieController()
 
 def sign_up(email,password):
     try:
@@ -17,12 +20,14 @@ def sign_in(email,password):
     try:
         user = supabase.auth.sign_in_with_password({"email": email, "password": password})
         st.session_state['token'] = supabase.auth.get_session().access_token
+        controller.set('token', supabase.auth.get_session().refresh_token)
         return user
     except Exception as e:
         st.error(f"Login failed: {e}")
 
 def sign_out():
     try:
+        controller.remove('token')
         supabase.auth.sign_out()
         st.session_state.user_email = None
         st.rerun()
@@ -135,7 +140,10 @@ def auth_screen():
                 else:
                     st.error("Passwords do not match")
 
-def main_app(user_email, user_id, token):
+def main_app(token):
+    session = supabase.auth.get_user(token)
+    user_email = session.user.email
+    user_id = session.user.id
     try:
         main.main_page(user_email, user_id, token)
     except Exception as e:
@@ -154,10 +162,23 @@ if "user_email" not in st.session_state:
     st.session_state.user_id = None
     st.session_state['authenticated'] = False
 
-if st.session_state.user_email:
-    main_app(st.session_state.user_email, st.session_state.user_id, st.session_state.token)
+if controller.get('token') == None:
+    if st.session_state.user_email:
+        main_app(st.session_state.token)
+    else:
+        auth_screen()
 else:
     try:
-        auth_screen()
+        supabase.auth.refresh_session(controller.get('token'))
+        #supabase.auth.set_session(access_token=controller.get('atoken'),refresh_token=controller.get('token'))
+        sessionRefresh = supabase.auth.get_session().access_token
+        controller.set('token', supabase.auth.get_session().refresh_token)
+        #controller.set('atoken', supabase.auth.get_session().access_token)
+        main_app(sessionRefresh)
     except Exception as e:
-        st.rerun()
+        supabase.auth.refresh_session(controller.get('token'))
+        #supabase.auth.set_session(access_token=controller.get('atoken'),refresh_token=controller.get('token'))
+        sessionRefresh = supabase.auth.get_session().access_token
+        controller.set('token', supabase.auth.get_session().refresh_token)
+        #controller.set('atoken', supabase.auth.get_session().access_token)
+        main_app(sessionRefresh)
