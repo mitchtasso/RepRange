@@ -47,9 +47,9 @@ def page(supabase, user_id):
                 with setCol:
                     setValue = st.number_input(label="", value=workouts[i]['sets'], key=f"setCol{i}", label_visibility='collapsed', min_value=1, max_value=10000)
                 
-                deleteButton, saveButton, emptyCol = st.columns([1,1,6.8])
+                saveButton, deleteButton, emptyCol = record.columns([1,1.1,6.8])
                 with saveButton:
-                    if st.button('Save', key=editButtonName, use_container_width=True):
+                    if st.button(':green[Save]', key=editButtonName, width='stretch'):
                             try:
                                 data = workouts[i]['id']
                                 if exerciseValue == None:
@@ -68,7 +68,7 @@ def page(supabase, user_id):
                             except Exception as e:
                                 record.error(f"Failed to update record: {e}")
                 with deleteButton:
-                    if st.button('Delete', key=workoutButtonName,use_container_width=True):
+                    if st.button(':red[Delete]', key=workoutButtonName,width='stretch'):
                             data = workouts[i]['id']
                             supabase.table("workouts").delete().eq("id", data).execute()
                             st.rerun()
@@ -110,9 +110,9 @@ def page(supabase, user_id):
                 with proteinCol:
                     proteinValue = st.number_input(label="", value=meals[i]['protein'], key=f"proteinCol{i}", label_visibility='collapsed', min_value=0, max_value=10000)
                 
-                deleteButton, saveButton, emptyCol = st.columns([1,1,6.8])
+                saveButton, deleteButton, emptyCol = record.columns([1,1.1,6.8])
                 with saveButton:
-                    if st.button('Save', key=editButtonName, use_container_width=True):
+                    if st.button(':green[Save]', key=editButtonName, width='stretch'):
                             try:
                                 data = meals[i]['id']
                                 if mealValue == None:
@@ -127,7 +127,7 @@ def page(supabase, user_id):
                             except Exception as e:
                                 record.error(f"Failed to update record: {e}")
                 with deleteButton:
-                    if st.button('Delete', key=delButtonName,use_container_width=True):
+                    if st.button(':red[Delete]', key=delButtonName,width='stretch'):
                             data = meals[i]['id']
                             supabase.table("meals").delete().eq("id", data).execute()
                             st.rerun()

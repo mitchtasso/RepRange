@@ -14,7 +14,7 @@ def page(user_id, user_email):
         st.title("Profile")
     
     profile = st.container(border=True)
-    profile.write(f"Email: {user_email}")
+    profile.text(f"Email: {user_email}")
     
     if profile.button(":red[Delete Account]"):
         profile.error("Selecting this option immediately deletes your account and all records. Proceed with caution.")

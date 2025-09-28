@@ -20,10 +20,20 @@ def main_page(user_email, user_id, token):
     supabase.postgrest.auth(token)
 
     # Sidebar navigation for authenticated users
-    st.sidebar.image("images/default-user.png", width=75)
-    st.sidebar.write(f"Welcome, {user_email}!")
+    st.markdown(
+    """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+    """,
+    unsafe_allow_html=True
+    )
+    email = user_email.split('@')[0]
+    st.sidebar.write(f'**{email.upper()}**')
+    st.sidebar.text(f"{user_email}")
     st.sidebar.title("Menu")
-    page = st.sidebar.selectbox("Select a page", ["📊Dashboard","📝Log", "🦾ChadAI", "📙Records", "📈Progress", "👤Profile", "🔗About"])
+    page = st.sidebar.selectbox("Page", ["📊Dashboard","📝Log", "🦾ChadAI", "📙Records", "📈Progress", "👤Profile", "🔗About"])
     
     if page == "📊Dashboard":
         dashboard.page(supabase, user_id)
