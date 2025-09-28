@@ -4,3 +4,4 @@ supabase
 pandas
 openai
 streamlit-cookies-controller
+clipboard
