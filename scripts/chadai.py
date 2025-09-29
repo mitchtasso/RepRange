@@ -88,6 +88,6 @@ def page(supabase, user_id, openai_key):
             if st.button(r"$\textsf{\large 🗘}$", key='vert_clear', width='stretch', help='Reset Chat', type='tertiary'):
                 reset_chat()
         with col2:
-            st.download_button(r"$\textsf{\large ↓}$", data=output, file_name='vert-output.txt', width='stretch', help='Download Chat', type='tertiary')
+            st.download_button(r"$\textsf{\normalsize ↓}$", data=output, file_name='vert-output.txt', width='stretch', help='Download Chat', type='tertiary')
         with col3:
             copy_button(text=st.session_state.vert_messages[len(st.session_state.vert_messages)-1]['content'])
