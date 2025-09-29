@@ -3,6 +3,7 @@ import random
 from openai import OpenAI
 import clipboard
 from pydantic import BaseModel, ConfigDict
+from st_copy import copy_button
 
 greetings = ['Hello, what can we get into today?', 'Hi, have anything specific in mind?',
              "What's on your mind today?"]
@@ -84,11 +85,9 @@ def page(supabase, user_id, openai_key):
         actions = st.container()
         col1, col2, col3, col4 = actions.columns([1,1,1,13])
         with col1:
-            if st.button(" 📋 ", key='vert_copy', width='stretch'):
-                clipboard.copy(st.session_state.vert_messages[len(st.session_state.vert_messages)-1]['content'])
-                actions.success('Contents copied')
-        with col2:
-            st.download_button(' ↓ ', data=output, file_name='vert-output.txt', width='stretch')
-        with col3:
-            if st.button(" 🗘 ", key='vert_clear', width='stretch'):
+            if st.button(" 🗘 ", key='vert_clear', width='stretch', help='Reset Chat'):
                 reset_chat()
+        with col2:
+            st.download_button(' ↓ ', data=output, file_name='vert-output.txt', width='stretch', help='Download Chat')
+        with col3:
+            copy_button(text=st.session_state.vert_messages[len(st.session_state.vert_messages)-1]['content'])

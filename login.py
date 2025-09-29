@@ -176,9 +176,5 @@ else:
         #controller.set('atoken', supabase.auth.get_session().access_token)
         main_app(sessionRefresh)
     except Exception as e:
-        supabase.auth.refresh_session(controller.get('token'))
-        #supabase.auth.set_session(access_token=controller.get('atoken'),refresh_token=controller.get('token'))
-        sessionRefresh = supabase.auth.get_session().access_token
-        controller.set('token', supabase.auth.get_session().refresh_token)
-        #controller.set('atoken', supabase.auth.get_session().access_token)
-        main_app(sessionRefresh)
+        controller.remove('token')
+        st.rerun()
